@@ -1,4 +1,4 @@
-import dockermanager
+import docker
 import subprocess
 import time
 
@@ -6,17 +6,17 @@ import time
 class dockermanager(object):
 
     def __init__(self):
-        self.client = dockermanager.Client(base_url ="unix://var/run/docker.sock")
+        self.client = docker.Client(base_url ="unix://var/run/docker.sock")
         self.total = 0
         self.containers = []
 
     def list(self):
         return self.client.containers()
 
-    #python 带参数运行
+    
     def create_container(self,malurl):
         #container = self.client.create_container(image = 'analyzer:latest',command = 'python start.py malurl',mem_limit = '256m')
-        container  = self.client.create_container(image = 'ubuntu' , command = ['/bin/echo','Hello world'])
+        container  = self.client.create_container(image = 'ubuntu:14.04_minimal' , command = ['/bin/echo','Hello world'])
         self.containers.append(container)
         self.total += 1
         return container.get('Id')
@@ -40,10 +40,12 @@ class dockermanager(object):
 if __name__ == '__main__':
     Manager = dockermanager()
     container,result= Manager.start_container()
+    print "start"
     print Manager.containers
-    print Manager.containers()
-    time.sleep(300)
-    Manager.stop_container()
+    print Manager.client.containers()
+    time.sleep(10)
+    Manager.stop_container(container)
+    print "stop"
     print Manager.containers
-    print Manager.containers()
+    print Manager.client.containers()
 

@@ -107,6 +107,7 @@ class Container(object):
 #                result_path='winetest.tar',platform='win',code_path=os.path.join(g_curdir,,'analyze','win'))
 
 if __name__ == '__main__':
+    # wine --security-opt seccomp:unconfined
     con = Container()
     # win test 1e722fb96a6133ba8ce70b68f51c5cb96b94b0d4491c9f28543755351147da3a
     filename = '1e722fb96a6133ba8ce70b68f51c5cb96b94b0d4491c9f28543755351147da3a'

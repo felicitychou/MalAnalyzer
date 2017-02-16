@@ -31,6 +31,7 @@ Based Docker Wine Strace Python2.7
  - container.py 容器调度
  - container_code/analyze.py 容器里运行样本
  - conf.py 配置文件 
+ - log。py 
 
 
 

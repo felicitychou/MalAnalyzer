@@ -81,6 +81,8 @@ def start_wine(mal_path,result_path,logger):
         # add .exe 
         if not ext:
             mal_path = '%s.exe' % filepath
+            os.renames(filepath, mal_path)
+
         wine_path = os.path.join(result_path,'wine.txt')
         with open(wine_path,'w') as f:
             child = subprocess.Popen(["wine",mal_path],stdout=f,stderr=f,env={'WINEDEBUG':'+relay'})
@@ -134,14 +136,17 @@ def check(children,logger):
 
 def stop(children,timeout,logger):
     try:
+        print children
         if children.has_key('wine'):
-            progrunner = children.get('wine')
+            progrunner = children.get("wine")
+            logger.info("Progrunner wine.")
         elif children.has_key('strace'):
-            progrunner = children.get('strace')
+            progrunner = children.get("strace")
+            logger.info("Progrunner strace.")
         else:
             pass
         
-        tcpdump = children.get('tcpdump',default=None)
+        tcpdump = children.get("tcpdump",None)
         # wait timeout
         wait = -5
         while (wait < timeout and progrunner.poll() is None):
@@ -171,6 +176,11 @@ def stop(children,timeout,logger):
 ###
 
 def main(mal_url,mal_path,result_path,timeout,mode):
+
+    # check result save path
+    if not os.path.exists(result_path):
+        os.mkdir(result_path)
+
     # init logger
     logger = Logger(logname = os.path.join(result_path,"log.txt")).logger
 
@@ -178,10 +188,6 @@ def main(mal_url,mal_path,result_path,timeout,mode):
     if mode not in ['win','linux']:
         logger.error("Unknown mode %s." % (mode,))
         return 
-    
-    # check result save path
-    if not os.path.exists(result_path):
-        os.mkdir(result_path)
     
     if mal_url:
         mal_path = download_mal(mal_url=mal_url,download_path=os.path.join('/tmp','sample'),logger=logger)
@@ -207,8 +213,6 @@ def main(mal_url,mal_path,result_path,timeout,mode):
         children = {"strace":strace,"tcpdump":tcpdump}
         stop(children=children,timeout=timeout,logger=logger)
     else:
-        children = {"tcpdump":tcpdump}
-        stop(children=children,timeout=timeout,logger=logger)
         return
 
 ###
@@ -235,7 +239,7 @@ if __name__ == '__main__':
 
     mal_url = None
     mal_path = None
-    mode = 'linux'
+    mode = None
     timeout = 60
     result_path = os.path.join('/tmp','result')
 

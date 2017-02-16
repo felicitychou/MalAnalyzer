@@ -64,7 +64,7 @@ class Container(object):
     #        return True
     #    else:
     #        return False
-    return (True if container.status == 'running' else False)
+        return (True if container.status == 'running' else False)
 
     def check(self,container,timeout):
         #wait = -5
@@ -105,5 +105,18 @@ class Container(object):
 
 #    con.analyze(name='wintest',mal_path=os.path.join(g_curdir,'sample2'),timeout=30,
 #                result_path='winetest.tar',platform='win',code_path=os.path.join(g_curdir,,'analyze','win'))
+
+if __name__ == '__main__':
+    con = Container()
+    # win test 1e722fb96a6133ba8ce70b68f51c5cb96b94b0d4491c9f28543755351147da3a
+    filename = '1e722fb96a6133ba8ce70b68f51c5cb96b94b0d4491c9f28543755351147da3a'
+    con.analyze(name=filename,mal_path=os.path.join('test',filename),timeout=30,
+                result_path='%s.tar'%(filename,),platform='win',code_path='container_code/')
+
+    # linux test af4d62414d6548fe6e3df537f073c6b076d963604a2a9f8a6cdaeeef6918c7ee
+    filename = 'af4d62414d6548fe6e3df537f073c6b076d963604a2a9f8a6cdaeeef6918c7ee'
+    con.analyze(name=filename,mal_path=os.path.join('test',filename),timeout=30,
+                result_path='%s.tar'%(filename,),platform='linux',code_path='container_code/')
+
 
 

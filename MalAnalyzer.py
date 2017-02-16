@@ -4,47 +4,33 @@
 # version = 0.3
 
 import os
+import subprocess
 from optparse import OptionParser
 
 import magic
+import yara
 
 from conf import platform_conf
+from static_analyze import static_analyze
+from dynamic_analyze import dynamic_analyze
 
-
-
-def get_file_type(filepath):
-    return  magic.from_file(filepath)
 
 def get_file_basic_info(filepath):
     '''
-    return {filename,filetype,filesize(Byte)}
+    return {filename,filetype,filesize(Byte),filemd5sum}
     '''
     filename = os.path.basename(filepath)
-    filetype = get_file_type(filepath)
+    filetype = magic.from_file(filepath)
     filesize = int(os.path.getsize(filename))
+    filemd5sum = md5sum(filepath)
 
-    return filename,filetype,filesize
+    return filename,filetype,filesize,filemd5sum
 
-def yara_scan(filepath):
-    pass
+def md5sum(filepath):
+    with open(filepath, 'rb') as f:
+        m = hashlib.md5(f.read())
+    return m.hexdigest()
 
-
-def static_analyze(filepath):
-    pass
-
-def get_platform(filetype):
-    pass 
-
-def dynamic_analyze(filepath,filetype):
-
-    platform = get_platform(filetype)
-    if platform:
-        container = Container()
-        container.analyze(name=taskid,mal_path=filepath,timeout=timeout,
-        result_path=result_path,platform=platform,code_path=platform_conf[platform]['code_path'])
-    else:
-        #logger.info("Can't handle type: %s" % task['type'])
-        print "not support"
 
 def analyze(filepath):
     basic_info = get_file_basic_info(filename)

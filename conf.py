@@ -7,8 +7,8 @@ docker_conf = {
                 "mal_path":'/tmp/sample',
                 "code_path":'/tmp/code/',
                 "result_path":'/tmp/result/',
-                "win_image":'analyze:win',
-                "linux_image":'analyze:linux',
+                "win_image":'felicitychou/wmas',
+                "linux_image":'felicitychou/lmas',
                 }
 
 #platform_conf = {

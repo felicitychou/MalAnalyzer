@@ -4,6 +4,8 @@
 # version = 0.1
 # author: felicitychou
 
+import logging
+
 class Logger(object):
     
     def __init__(self, logname = "log.txt", loglevel = logging.DEBUG, loggername = "logger"):

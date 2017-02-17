@@ -52,7 +52,6 @@ def download_mal(mal_url,download_path,logger,extension=''):
         logger.exception('urllib2.HTTPError')
         sys.exit()
     except Exception,e:
-        #logger.exception('Exception')
         logger.exception('%s: %s' % (Exception,e))
         sys.exit()
 
@@ -69,7 +68,6 @@ def start_tcpdump(result_path,logger):
             logger.error("Start tcpdump failed.")
             sys.exit()
     except Exception,e:
-        #logger.exception('Exception')
         logger.exception('%s: %s' % (Exception,e))
         sys.exit()
 
@@ -86,6 +84,7 @@ def start_wine(mal_path,result_path,logger):
         wine_path = os.path.join(result_path,'wine.txt')
         with open(wine_path,'w') as f:
             child = subprocess.Popen(["wine",mal_path],stdout=f,stderr=f,env={'WINEDEBUG':'+relay'})
+            logger.debug("WINEDEBUG:+relay wine %s" % (mal_path,))
         if child.poll() is None:
             logger.info("Start wine(pid=%s) successfully." % (child.pid))
             return child
@@ -93,7 +92,6 @@ def start_wine(mal_path,result_path,logger):
             logger.error("Start wine failed.")
             sys.exit()
     except Exception,e:
-        #logger.exception('Exception')
         logger.exception('%s: %s' % (Exception,e))
         sys.exit()
 
@@ -102,9 +100,10 @@ def start_wine(mal_path,result_path,logger):
 def start_strace(mal_path,result_path,logger):
     try:
         os.chmod(mal_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH) # mode:744
-        logger.info('Chmod %s to %s successfully.' % (mal_path,'744'))
+        logger.debug('Chmod %s to %s successfully.' % (mal_path,'744'))
         strace_path = os.path.join(result_path,'strace.txt')
         child = subprocess.Popen(["strace","-ttt","-x","-y","-yy","-s","32","-o",strace_path,"-f",mal_path])
+	logger.debug("strace -ttt -x -y -yy -s 32 -o %s -f %s" % (strace_path,mal_path))
         if child.poll() is None:
             logger.info("Start strace(pid=%s) successfully." % (child.pid))
             return child
@@ -112,31 +111,27 @@ def start_strace(mal_path,result_path,logger):
             logger.error("Start strace failed.")
             sys.exit()
     except Exception,e:
-        #logger.exception('Exception')
         logger.exception('%s: %s' % (Exception,e))
         sys.exit()
 
 ###
 
-#def check(childname,child,logger):
 def check(children,logger):
     check_result = True
     for childname,child in children.items():
         if child.poll() is None:
             logger.error("Stop %s(pid=%s) fail." % (childname,child.pid))
             check_result = check_result and False
-            #return False
         else:
             logger.info("Stop %s(pid=%s) successfully." % (childname,child.pid))
             check_result = check_result and True
-            #return True
     return check_result
 
 ###
 
 def stop(children,timeout,logger):
     try:
-        print children
+	logger.debug(children)
         if children.has_key('wine'):
             progrunner = children.get("wine")
             logger.info("Progrunner wine.")
@@ -148,10 +143,12 @@ def stop(children,timeout,logger):
         
         tcpdump = children.get("tcpdump",None)
         # wait timeout
-        wait = -5
+        wait = 0
         while (wait < timeout and progrunner.poll() is None):
-            time.sleep(10)
-            wait += 10
+            time.sleep(5)
+            wait += 5
+            logger.info("Wait %d" % wait)
+
 
         # timeout 
         if progrunner.poll() is None:
@@ -202,7 +199,8 @@ def main(mal_url,mal_path,result_path,timeout,mode):
         logger.error("Mal does not exist.")
         return
 
-    # start 
+    # start analyze
+    logger.info("Start Analyze Mal:%s Mode:%s" % (mal_path,mode))
     tcpdump = start_tcpdump(result_path=result_path,logger=logger)
     if mode == 'win':
         wine = start_wine(mal_path=mal_path,result_path=result_path,logger=logger)

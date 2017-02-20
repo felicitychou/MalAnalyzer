@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # Malcode Analysis System
-# version = 0.3
+# version = 0.1
 
 import os
 import subprocess
@@ -18,21 +18,7 @@ import magic
 
 
 
-def get_file_basic_info(filepath):
-    '''
-    return {filename,filetype,filesize(Byte),filemd5sum}
-    '''
-    filename = os.path.basename(filepath)
-    filetype = magic.from_file(filepath)
-    filesize = int(os.path.getsize(filepath))
-    filemd5sum = md5sum(filepath)
 
-    return filename,filetype,filesize,filemd5sum
-
-def md5sum(filepath):
-    with open(filepath, 'rb') as f:
-        m = hashlib.md5(f.read())
-    return m.hexdigest()
 
 
 def analyze(filepath):

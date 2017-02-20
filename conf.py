@@ -20,3 +20,9 @@ dynamic_conf = {
 
 
 }
+
+static_conf = {
+    "yararules":'yara',
+
+
+}

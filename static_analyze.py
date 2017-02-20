@@ -1,34 +1,42 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # Malcode Analysis System
-# version = 0.3
+# version = 0.1
+# author = felicitychou
+
+import subprocess
+import yara
+
+from conf import static_conf
+
+class StaticAnalyzer(object):
+
+    def __init__(self,filepath):
+        self.filepath = filepath
+
+
+    # yara scan
+    def yara_scan(self, rulesfile):
+        rules = yara.compile(rulesfile)
+        matches = rules.match(self.filepath)
+        return matches
+
+    def vt_scan(self):
+        pass
+
+    def clamav_scan(self):
+        pass
+
+    def run(self):
+
+        # yara_scan
+        yara_scan_result = self.yara_scan(rulesfile=static_conf['yararules'])
+
+        # VT_scan
+        vt_scan_result = self.vt_scan()
+
+        #ClamAV_scan
 
 
 
 
-
-# get pe info
-
-
-# get elf info
-
-
-# get strings unicode and ascii
-def get_strings(filepath):
-    # windows
-    # strings.exe https://technet.microsoft.com/en-us/sysinternals/bb897439.aspx
-
-    #linux
-    ascii_strings = subprocess.check_output(["strings", "-a", self.file])
-    unicode_strings = subprocess.check_output(["strings", "-a", "-el", self.file])
-    return ascii_strings,unicode_strings
-
-# yara scan
-def yara_scan(filepath,rulesfile):
-    rules = yara.compile(rulesfile,rulesfile)
-    matches = rules.match(filepath)
-    return matches
-
-
-def static_analyze(filepath):
-    pass

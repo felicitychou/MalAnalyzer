@@ -97,18 +97,28 @@ def start_wine(mal_path,result_path,logger):
 
 ###
 
-def start_strace(mal_path,result_path,logger):
+def start_trace(mal_path,result_path,trace,logger):
     try:
         os.chmod(mal_path, stat.S_IRWXU | stat.S_IRGRP | stat.S_IROTH) # mode:744
         logger.debug('Chmod %s to %s successfully.' % (mal_path,'744'))
-        strace_path = os.path.join(result_path,'strace.txt')
-        child = subprocess.Popen(["strace","-ttt","-x","-y","-yy","-s","32","-o",strace_path,"-f",mal_path])
-	logger.debug("strace -ttt -x -y -yy -s 32 -o %s -f %s" % (strace_path,mal_path))
+
+        trace_path = os.path.join(result_path,'%s.txt' % trace)
+
+        ltrace_cmd = ['ltrace','-f','-ttt', '-S', '-o',trace_path,mal_path]
+        strace_cmd = ["strace","-ttt","-x","-y","-yy","-s","32","-o",trace_path,"-f",mal_path]
+        
+        if trace == 'strace'
+            trace_cmd = strace_cmd
+        else:
+            trace_cmd = ltrace_cmd
+            
+        child = subprocess.Popen(trace_cmd)
+        logger.debug(trace_cmd)
         if child.poll() is None:
-            logger.info("Start strace(pid=%s) successfully." % (child.pid))
+            logger.info("Start %s(pid=%s) successfully." % (trace,child.pid))
             return child
         else:
-            logger.error("Start strace failed.")
+            logger.error("Start %s failed." % trace)
             sys.exit()
     except Exception,e:
         logger.exception('%s: %s' % (Exception,e))
@@ -207,8 +217,8 @@ def main(mal_url,mal_path,result_path,timeout,mode):
         children = {"wine":wine,"tcpdump":tcpdump}
         stop(children=children,timeout=timeout,logger=logger)
     elif mode == 'linux':
-        strace = start_strace(mal_path=mal_path,result_path=result_path,logger=logger)
-        children = {"strace":strace,"tcpdump":tcpdump}
+        trace = start_trace(mal_path=mal_path,result_path=result_path,trace='ltrace',logger=logger)
+        children = {"ltrace":trace,"tcpdump":tcpdump}
         stop(children=children,timeout=timeout,logger=logger)
     else:
         return

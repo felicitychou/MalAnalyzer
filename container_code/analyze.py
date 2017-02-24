@@ -107,7 +107,7 @@ def start_trace(mal_path,result_path,trace,logger):
         ltrace_cmd = ['ltrace','-f','-ttt', '-S', '-o',trace_path,mal_path]
         strace_cmd = ["strace","-ttt","-x","-y","-yy","-s","32","-o",trace_path,"-f",mal_path]
         
-        if trace == 'strace'
+        if trace == 'strace':
             trace_cmd = strace_cmd
         else:
             trace_cmd = ltrace_cmd
@@ -141,15 +141,14 @@ def check(children,logger):
 
 def stop(children,timeout,logger):
     try:
-	logger.debug(children)
-        if children.has_key('wine'):
-            progrunner = children.get("wine")
-            logger.info("Progrunner wine.")
-        elif children.has_key('strace'):
-            progrunner = children.get("strace")
-            logger.info("Progrunner strace.")
-        else:
-            pass
+	    logger.debug(children)
+        for item in ("wine","strace","ltrace"):
+            if children.has_key(item):
+                progrunner = children.get(item)
+                logger.info("Progrunner %s." % (item,))
+                break
+            else:
+                continue
         
         tcpdump = children.get("tcpdump",None)
         # wait timeout
@@ -182,7 +181,7 @@ def stop(children,timeout,logger):
 
 ###
 
-def main(mal_url,mal_path,result_path,timeout,mode):
+def main(mal_url,mal_path,result_path,timeout,mode,tracemode):
 
     # check result save path
     if not os.path.exists(result_path):
@@ -217,8 +216,8 @@ def main(mal_url,mal_path,result_path,timeout,mode):
         children = {"wine":wine,"tcpdump":tcpdump}
         stop(children=children,timeout=timeout,logger=logger)
     elif mode == 'linux':
-        trace = start_trace(mal_path=mal_path,result_path=result_path,trace='ltrace',logger=logger)
-        children = {"ltrace":trace,"tcpdump":tcpdump}
+        trace = start_trace(mal_path=mal_path,result_path=result_path,trace=tracemode,logger=logger)
+        children = {tracemode:trace,"tcpdump":tcpdump}
         stop(children=children,timeout=timeout,logger=logger)
     else:
         return
@@ -239,11 +238,12 @@ param:
         -f/--malpath analyze malware file
         -t/--timeout analyze time
         -m/--mode    analyze mode win/linux
+        --trace      analyze  strace/ltrace
         -h/--help    help
 '''
 
 if __name__ == '__main__':
-    opts, args = getopt.getopt(sys.argv[1:], "hu:f:t:m:",["help","malurl","malpath","timeout","mode"])
+    opts, args = getopt.getopt(sys.argv[1:], "hu:f:t:m:",["help","malurl=","malpath=","timeout=","mode=","tracemode="])
 
     mal_url = None
     mal_path = None
@@ -252,15 +252,17 @@ if __name__ == '__main__':
     result_path = os.path.join('/tmp','result')
 
     for op, value in opts:
-        if op == "-u" or op == "--malurl":
+        if op in ("-u","--malurl"):
             mal_url = value
-        elif op == "-f" or op == "--malpath":
+        elif op in ("-f","--malpath"):
             mal_path = value
-        elif op == "-t" or op == "--timeout":
+        elif op in ("-t","--timeout"):
             timeout = int(value)
-        elif op == '-m' or op == "--mode":
+        elif op in ('-m',"--mode"):
             mode = value
-        elif op == "-h" or op == "--help":
+        elif op in ('--tracemode'):
+            tracemode = value
+        elif op in ("-h","--help"):
             usage()
             sys.exit()
         else:
@@ -268,7 +270,7 @@ if __name__ == '__main__':
             sys.exit()  
 
     if mal_url or mal_path:
-        main(mal_url=mal_url,mal_path=mal_path,result_path=result_path,timeout=timeout,mode=mode)
+        main(mal_url=mal_url,mal_path=mal_path,result_path=result_path,timeout=timeout,mode=mode,tracemode=tracemode)
     else:
         usage()
         sys.exit() 

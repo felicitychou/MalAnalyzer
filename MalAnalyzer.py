@@ -5,13 +5,10 @@
 
 from optparse import OptionParser
 
-
-
-
-#from conf import platform_conf
-from basic_analyze import BasicAnalyzer
-from static_analyze import StaticAnalyzer
-from dynamic_analyze import DynamicAnalyzer
+from core.basic_analyze import BasicAnalyzer
+from core.static_analyze import StaticAnalyzer
+from core.dynamic_analyze import DynamicAnalyzer
+from core.logger import Logger
 
 
 def analyze(filepath):
@@ -19,6 +16,9 @@ def analyze(filepath):
     basic_analyzer = BasicAnalyzer()
     static_analyzer = StaticAnalyzer()
     dynamic_analyzer = DynamicAnalyzer()
+    outputter = Outputter()
+
+
 
 
 

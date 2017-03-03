@@ -22,7 +22,10 @@ dynamic_conf = {
 }
 
 static_conf = {
-    "yararules":'yara',
-
-
+    "yara_uncompiled_rules": {
+        'namespace1': 'yararules/email/image.yar',
+        'namespace2': 'yararules/email/scam.yar',
+        'namespace3': 'yararules/email/urls.yar'
+    },
+    "yara_compiled_rules":"yararules/yara_compiled_rules/"
 }

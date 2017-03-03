@@ -14,12 +14,14 @@ Based Docker Wine Strace Python2.7
 
 功能点
 - 获取文件基本信息
-   - 文件名、hash值、文件类型信息
-   - 壳信息、PE文件信息、strings、ssdeep （计划）
+   - 文件名、文件大小、hash值、文件类型、ssdeep
+   - 壳信息／脱壳 upx、PE文件信息、strings （计划）
+
 - 静态分析
-   - yara检测、clamav库（计划）
+   - yara检测、
+   - clamav库（计划）
 - 动态分析
-   - 动态数据获取：tcpdump、strace（ELF）、Wine（EXE）（测试中）
+   - 动态数据获取：tcpdump、strace／ltrace（ELF）、Wine（EXE）（测试中）
    - 数据解析 （计划）
 
 

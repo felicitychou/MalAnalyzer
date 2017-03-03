@@ -19,7 +19,7 @@ class BasicAnalyzer(object):
     def __init__(self,filepath):
 
         self.filepath = filepath
-        self.get_file_basic_info()
+        self.run()
 
     def run(self):
         '''
@@ -77,3 +77,11 @@ class BasicAnalyzer(object):
     # get ssdeep
     def get_ssdeep(self):
         return ssdeep.hash_from_file(self.filepath)
+
+    # get result
+    def get_result(self):
+        result = {}
+        for item in ('filename','filetype','filesize')
+            result[item] = getattr(self,item)
+        result.update(self.hash)
+        return result

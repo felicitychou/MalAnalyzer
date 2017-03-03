@@ -2,7 +2,7 @@
 # -*- coding:utf-8 -*-
 # Malcode Analysis System
 # version = 0.1
-# author: felicitychou
+# author = felicitychou
 
 import logging
 
@@ -26,3 +26,5 @@ class Logger(object):
         ch.setLevel(loglevel)
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
+
+logger = Logger()

@@ -3,6 +3,9 @@
 # Malcode Analysis System
 # version = 0.2
 
+curdir = os.path.split(os.path.realpath(__file__))[0]
+
+
 docker_conf = {
                 "mal_path":'/tmp/sample',
                 "code_path":'/tmp/code/',
@@ -11,15 +14,13 @@ docker_conf = {
                 "linux_image":'felicitychou/lmas',
                 }
 
-#platform_conf = {
-#    "win":{"code_path":"win"},
-#    "linux":{"code_path":"linux"}
-#}
+
 dynamic_conf = {
+    "result_path":os.path.join(curdir,'result'),
+    "code_path":os.path.join(curdir,'core','code')
     "timeout":30,
-
-
 }
+
 
 static_conf = {
     "yara_uncompiled_rules": {

@@ -1,7 +1,8 @@
-#!/usr/bin/env Python
+#!/usr/bin/env python
 # -*- coding:utf-8 -*-
 # Malcode Analysis System
 # version = 0.1
+# author = felicitychou
 # for docker 1.12
 # Docker SDK for Python :pip install docker (version>=2.0)
 
@@ -9,11 +10,10 @@
 import time
 import os
 
-#from docker import DockerClient
 import docker
 
 from conf import docker_conf
-from log import Logger
+from logger import logger
 
 class Container(object):
 

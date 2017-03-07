@@ -13,7 +13,9 @@ import subprocess
 import magic
 import ssdeep
 import pefile
+import peutils
 
+from ..conf import basic_conf
 
 
 # filename filetype filesize md5 sha1
@@ -55,24 +57,33 @@ class BasicAnalyzer(object):
             raise e
 
     # get packer info:
-    def get_packer_info(self):
+    def get_packer_info_pe(self,pe):
         # PE (PEid)
+        # pe = pefile.PE(self.filepath)
+        signatures = peutils.SignatureDatabase(basic_conf["PEidSign_path"])
+        # matches is list()
+        matches = signatures.match_all(pe, ep_only = True)
+        self.packer = str(matches)
 
+    def get_packer_info_elf(self):
         # ELF (UPX)
-        cmd = ["/usr/bin/upx","-q", "-t",file_path]
-        output = self.check_output_safe(cmd)
+        cmd = [basic_conf["UPX_path"],"-q", "-t",self.filepath]
+        output = subprocess.check_output(cmd)
         if -1!=output.find("[OK]"):
-            return "upx"
+            self.packer = "upx"
         else:
-            return None
+            self.packer = None
 
-    # get pe info ？
+
+    # get pe info
     def get_pe_info(self):
+
         # https://github.com/erocarrera/pefile/blob/wiki/UsageExamples.md#introduction
         # load pe
         pe = pefile.PE(self.filepath)
-        self.pe_info = pe.dump_info()
-        '''
+        self.get_packer_info_pe(pe = pe)
+        #self.pe_info = pe.dump_info()
+
         self.pe_info = {}
         # Machine
         if hasattr(pe.FILE_HEADER,'Machine'):
@@ -98,12 +109,13 @@ class BasicAnalyzer(object):
         self.pe_info['DIRECTORY_ENTRY_IMPORT'] = import_info
         
         # Listing the exported symbols
-        if hasattr(pe,DIRECTORY_ENTRY_EXPORT):
+        if hasattr(pe,'DIRECTORY_ENTRY_EXPORT'):
             self.pe_info['DIRECTORY_ENTRY_EXPORT']  = [(hex(pe.OPTIONAL_HEADER.ImageBase + exp.address), exp.name, exp.ordinal) for exp in pe.DIRECTORY_ENTRY_EXPORT.symbols]
-        '''
+
 
     # get elf info ？？？
     def get_elf_info(self):
+        self.get_packer_info_elf()
         pass
 
     # get strings unicode and ascii 
@@ -152,10 +164,4 @@ class BasicAnalyzer(object):
         except Exception as e:
             raise e
 
-
-if __name__ == '__main__':
-    from logger import logger
-    filepath = ''
-    ba = BasicAnalyzer(filepath = filepath,logger = logger)
-    print(ba.output())
 

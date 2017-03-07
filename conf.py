@@ -3,6 +3,8 @@
 # Malcode Analysis System
 # version = 0.2
 
+import os
+
 curdir = os.path.split(os.path.realpath(__file__))[0]
 
 
@@ -17,16 +19,21 @@ docker_conf = {
 
 dynamic_conf = {
     "result_path":os.path.join(curdir,'result'),
-    "code_path":os.path.join(curdir,'core','code')
+    "code_path":os.path.join(curdir,'core','code'),
     "timeout":30,
 }
 
 
 static_conf = {
     "yara_uncompiled_rules": {
-        'namespace1': 'yararules/email/image.yar',
-        'namespace2': 'yararules/email/scam.yar',
-        'namespace3': 'yararules/email/urls.yar'
+        'x': os.path.join(curdir,'data','yara_uncompiled_rules/x.yar'),
+        'y': os.path.join(curdir,'data','yara_uncompiled_rules/y.yar'),
+        'z': os.path.join(curdir,'data','yara_uncompiled_rules/z.yar'),
     },
-    "yara_compiled_rules":"yararules/yara_compiled_rules/"
+    "yara_compiled_rules":os.path.join(curdir,'data','yara_compiled_rules'),
+}
+
+basic_conf = {
+    "UPX_path":"/usr/bin/upx",
+    "PEidSign_path":os.path.join(curdir,'data','userdb.txt'),
 }

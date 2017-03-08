@@ -7,13 +7,13 @@
 # Docker SDK for Python :pip install docker (version>=2.0)
 
 
-import time
 import os
+import time
 
 import docker
 
 from conf import docker_conf
-from logger import logger
+
 
 class Container(object):
 
@@ -39,7 +39,7 @@ class Container(object):
         else:
             return None
 
-	self.logger.debug("image:%s command:%s config:%s" % (image,command,config))
+	    self.logger.debug("image:%s command:%s config:%s" % (image,command,config))
         try:
             container = self.client.containers.run(image=image,command=command,**config)
             return container
@@ -94,15 +94,6 @@ class Container(object):
             if isinstance(container,docker.models.containers.Container):
                 self.logger.info("Remove container %s." % (container.id))
                 self.delete(container)
-
-#if __name__ == '__main__':
-#    con = Container()
-#    g_curdir = os.path.split(os.path.realpath(__file__))[0]
-    #con.analyze(name='linuxtest',mal_path=os.path.join(g_curdir,'sample1'),timeout=30,
-    #            result_path='linuxtest.tar',platform='linux',code_path=os.path.join(g_curdir,'analyze','linux'))
-
-#    con.analyze(name='wintest',mal_path=os.path.join(g_curdir,'sample2'),timeout=30,
-#                result_path='winetest.tar',platform='win',code_path=os.path.join(g_curdir,,'analyze','win'))
 
 if __name__ == '__main__':
     logger = Logger().logger

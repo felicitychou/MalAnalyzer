@@ -4,18 +4,18 @@
 # version = 0.1
 # author = felicitychou
 
-import os
-import time
-import hashlib
 import binascii
+import hashlib
+import os
 import subprocess
+import time
 
 import magic
-import ssdeep
 import pefile
 import peutils
+import ssdeep
 
-from ..conf import basic_conf
+from conf import basic_conf
 
 
 # filename filetype filesize md5 sha1

@@ -14,8 +14,19 @@ import magic
 import ssdeep
 import pefile
 import peutils
+from elftools.elf.elffile import ELFFile
+from elftools.elf.descriptions import (
+    describe_ei_class, describe_ei_data, describe_ei_version,
+    describe_ei_osabi, describe_e_type, describe_e_machine,
+    describe_e_version_numeric, describe_p_type, describe_p_flags,
+    describe_sh_type, describe_sh_flags,
+    describe_symbol_type, describe_symbol_bind, describe_symbol_visibility,
+    describe_symbol_shndx, describe_reloc_type, describe_dyn_tag,
+    describe_ver_flags, describe_note)
 
 from ..conf import basic_conf
+
+
 
 
 # filename filetype filesize md5 sha1
@@ -43,10 +54,7 @@ class BasicAnalyzer(object):
             self.get_strings()
             self.strings = {"ascii":self.ascii_strings,"unicode":self.unicode_strings}
 
-            # get packer_info
-            self.getpacker_info()
-
-            # get info
+            # get info (include packer info)
             if self.filetype.startswith('PE32'):
                 self.get_pe_info()
             elif self.filetype.startswith('ELF'):
@@ -116,7 +124,48 @@ class BasicAnalyzer(object):
     # get elf info ？？？
     def get_elf_info(self):
         self.get_packer_info_elf()
-        pass
+        with open(self.filepath,'rb') as f:
+            elffile = ELFFile(f)
+            elffile.header
+        self.elf_info['header'] = {'Magic':' '.join('%2.2x' % byte2int(b) for b in elffile.e_ident_raw),}
+
+
+    def _parse_elf_info(self,elffile):
+
+        header = {}
+        e_ident = elffile.header['e_ident']
+        header['Magic'] = ' '.join('%2.2x' % byte2int(b) for b in elffile.e_ident_raw)
+        header['Class'] = '%s' % describe_ei_class(e_ident['e_ident']['EI_CLASS'])
+        header['Data'] = '%s' % describe_ei_data(e_ident['e_ident']['EI_DATA'])        
+        header['Version'] = '%s' % describe_ei_version(e_ident['EI_VERSION'])
+        header['OS/ABI'] = '%s' %describe_ei_osabi(e_ident['EI_OSABI'])
+        header['ABI Version'] = '%d' % e_ident['EI_ABIVERSION']
+        header['Type'] = '%s' % describe_e_type(header['e_type'])
+        header['Machine'] = '%s' % describe_e_machine(header['e_machine'])
+        header['Version'] = '%s' % describe_e_version_numeric(header['e_version'])
+        header['Entry point address'] = '%s' % self._format_hex(header['e_entry']))
+        self._emit('  Start of program headers:          %s' %
+                header['e_phoff'])
+        self._emitline(' (bytes into file)')
+        self._emit('  Start of section headers:          %s' %
+                header['e_shoff'])
+        self._emitline(' (bytes into file)')
+        self._emitline('  Flags:                             %s%s' %
+                (self._format_hex(header['e_flags']),
+                self.decode_flags(header['e_flags'])))
+        self._emitline('  Size of this header:               %s (bytes)' %
+                header['e_ehsize'])
+        self._emitline('  Size of program headers:           %s (bytes)' %
+                header['e_phentsize'])
+        self._emitline('  Number of program headers:         %s' %
+                header['e_phnum'])
+        self._emitline('  Size of section headers:           %s (bytes)' %
+                header['e_shentsize'])
+        self._emitline('  Number of section headers:         %s' %
+                header['e_shnum'])
+        self._emitline('  Section header string table index: %s' %
+                header['e_shstrndx'])
+
 
     # get strings unicode and ascii 
     def get_strings(self):
@@ -165,3 +214,4 @@ class BasicAnalyzer(object):
             raise e
 
 
+    # output json

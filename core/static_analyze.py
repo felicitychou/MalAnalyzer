@@ -6,10 +6,10 @@
 
 import os
 
-import requests
 import yara
+import requests
 
-from core.conf import static_conf
+from conf import static_conf
 
 class StaticAnalyzer(object):
 
@@ -119,7 +119,14 @@ class StaticAnalyzer(object):
                 self.vt_scan_result['scan_date'] = vt_report['scan_date']
                 self.vt_scan_result['positives'] = vt_report['positives']
                 self.vt_scan_result['total'] = vt_report['total']
-                self.vt_scan_result['scans'] = vt_report['scans']
+                # self.vt_scan_result['scans'] = vt_report['scans']
+                # only save detected scans
+		self.vt_scan_result['scans'] = {}
+                for key,item in vt_report['scans'].iteritems():
+                    if item['detected']:
+                        self.vt_scan_result['scans'][key] = item
+                    else:
+                        pass	
                 self.vt_scan_result['permalink'] = vt_report['permalink']
             else:
                 self.vt_scan_result = None
@@ -131,8 +138,8 @@ class StaticAnalyzer(object):
         pass
 
     def get_yara_scan_result(self):
-        return getattr(self, 'yara_scan_result', None)
+        return getattr(self,'yara_scan_result',None)
 
     def get_vt_scan_result(self):
-        return getattr(self, 'vt_scan_result', None)
+        return getattr(self,'vt_scan_result',None)
 

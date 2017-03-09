@@ -4,16 +4,17 @@
 # version = 0.1
 # author = felicitychou
 
-import os
-import time
-import hashlib
 import binascii
+import hashlib
+import os
 import subprocess
+import time
 
 import magic
-import ssdeep
 import pefile
 import peutils
+import ssdeep
+
 from elftools.elf.elffile import ELFFile
 from elftools.elf.descriptions import (
     describe_ei_class, describe_ei_data, describe_ei_version,
@@ -24,7 +25,7 @@ from elftools.elf.descriptions import (
     describe_symbol_shndx, describe_reloc_type, describe_dyn_tag,
     describe_ver_flags, describe_note)
 
-from ..conf import basic_conf
+from conf import basic_conf
 
 
 

@@ -5,10 +5,11 @@
 # author = felicitychou
 
 import os
-from ..core.basic_analyze import BasicAnalyzer
-from ..core.logger import Logger
+from basic_analyze import BasicAnalyzer
+from logger import Logger
 
 filepath = ""
 logger = Logger(logname = "%s.txt" % os.path.splitext(__file__)[0])
-basic_analyzer = BasicAnalyzer(filepath = filepath,logger = logger)
-print(basic_analyzer.output())
+basic_analyzer = BasicAnalyzer(filepath = filepath,logger = logger).logger
+
+print(basic_analyzer.run())

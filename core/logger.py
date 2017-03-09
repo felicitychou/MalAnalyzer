@@ -26,5 +26,3 @@ class Logger(object):
         ch.setLevel(loglevel)
         ch.setFormatter(formatter)
         self.logger.addHandler(ch)
-
-logger = Logger().logger

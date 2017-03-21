@@ -33,7 +33,10 @@ class StaticAnalyzer(object):
                 self.clamav_scan()
         except Exception as e:
             self.logger.exception('%s: %s' % (Exception, e))
-            #raise e
+    
+    # output list
+    def output(self):
+        return ['yara_scan_result','vt_scan_result']      
 
     # yara scan
     def yara_scan(self):
@@ -63,7 +66,7 @@ class StaticAnalyzer(object):
                 self.yara_scan_result.extend([{"namespace":match.namespace,"rule":match.rule,"meta":match.meta} for match in matches])
         except Exception as e:
             self.logger.exception('%s: %s' % (Exception, e))
-            #raise e
+            
 
     def vt_scan(self):
         '''
@@ -109,7 +112,7 @@ class StaticAnalyzer(object):
             self._parse_vt_report(vt_report = response.json())
         except Exception as e:
             self.logger.exception('%s: %s' % (Exception, e))
-            #raise e
+            
 
 
     def _parse_vt_report(self,vt_report):
@@ -121,7 +124,7 @@ class StaticAnalyzer(object):
                 self.vt_scan_result['total'] = vt_report['total']
                 # self.vt_scan_result['scans'] = vt_report['scans']
                 # only save detected scans
-		self.vt_scan_result['scans'] = {}
+		        self.vt_scan_result['scans'] = {}
                 for key,item in vt_report['scans'].iteritems():
                     if item['detected']:
                         self.vt_scan_result['scans'][key] = item
@@ -132,7 +135,7 @@ class StaticAnalyzer(object):
                 self.vt_scan_result = None
         except Exception as e:
             self.logger.exception('%s: %s' % (Exception, e))
-            #raise e
+            
 
     def clamav_scan(self):
         pass

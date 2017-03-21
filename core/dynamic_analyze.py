@@ -5,13 +5,16 @@
 # author = felicitychou
 
 from container import Container
-from logger import logger
+#from logger import logger
+from conf import dynamic_conf
 
 class DynamicAnalyzer(object):
 
     def __init__(self,**kw)
 
         self.logger = logger
+
+        
 
         # init filepath,filetype,md5,timeout,result_path,code_path
         for key in ("filepath","filetype","md5","timeout","result_path","code_path")

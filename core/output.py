@@ -6,9 +6,11 @@
 
 import json
 
-from core.conf import output_conf
+from conf import output_conf
 from logger import logger
-
+from core.basic_analyze import BasicAnalyzer
+from core.static_analyze import StaticAnalyzer
+from core.dynamic_analyze import DynamicAnalyzer
 
 # file ：json markdown
 # database：Sqlite3 / mongodb
@@ -16,37 +18,36 @@ from logger import logger
 class OutputJson(object):
 
     def __init__(self):
-        self.path = output_conf['json']['path']
-        self.handle = self.open(path=self.path)
-        self.log = logger
+        self.jsonpath = output_conf['json']['path']
+        #self.log = logger
 
-    def open(self, path):
-        if not os.path.exists(path):
-            self.handle = open(path,'wb+')
-        else:
-            self.log.error("Json Path Error: %s exists." % (path,))
+    def write(self,analyzers):
+        json_dict = {}
 
-    def write(self,analyzer):
+        for analyzer in analyzers:
+            result = {}
+            if isinstance(analyzer,BasicAnalyzer):
+                analyzer_type = 'basic'
+            elif isinstance(analyzer,StaticAnalyzer):
+                analyzer_type = 'static'
+            elif isinstance(analyzer,DynamicAnalyzer):
+                analyzer_type = 'dynamic'
+            else:
+                pass
+            json_dict[analyzer_type]  = dict(zip(analyzer.output(),[getattr(analyzer,item,None) for item in analyzer.output()]))
 
-        if isinstance(analyzer,)
-
-        self.handle()
-        json.
-        pass
-
-
-
+        with open(self.jsonpath,'wb') as fw:
+            json.dump(json_dict,fw)
 
 
 class OutputHandle(object):
     """docstring for OutputHandle"""
     def __init__(self):
-
         pass
 
 
     def write(self, data):
-        for item in 
+        pass
 
 
         

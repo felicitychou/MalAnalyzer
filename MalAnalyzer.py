@@ -9,7 +9,7 @@ from core.basic_analyze import BasicAnalyzer
 from core.static_analyze import StaticAnalyzer
 from core.dynamic_analyze import DynamicAnalyzer
 from core.logger import Logger
-from core.output import 
+#from core.output import 
 
 
 def analyze(filepath):
@@ -17,7 +17,7 @@ def analyze(filepath):
     basic_analyzer = BasicAnalyzer()
     static_analyzer = StaticAnalyzer()
     dynamic_analyzer = DynamicAnalyzer()
-    outputter = Outputter()
+    #outputter = Outputter()
 
 
 

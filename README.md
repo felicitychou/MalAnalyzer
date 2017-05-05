@@ -13,7 +13,7 @@ Based Docker Wine Strace Python2.7
     - PE/ELF信息 【未完成，需要测试和集成ELFParse】
 
 - 静态分析
-    - yara检测 【未完成】
+    - yara检测 【完成】
     - VT查询 【完成】
     - clamav检测 【未完成】
    
